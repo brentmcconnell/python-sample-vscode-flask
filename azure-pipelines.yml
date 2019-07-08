@@ -16,15 +16,12 @@ variables:
 
 steps:
 - script: |
+    GIT_COMMIT=$( git rev-parse --short HEAD )
     echo "dockerId=$(dockerId)"
     echo "imageName=$(imageName)"
     echo "Docker password=$(docker_pass)"
     echo "Docker username=$(docker_user)"
     echo "Build.BuildNumber=$(Build.BuildNumber)"
-    
-
-- script: |
-    GIT_COMMIT=$( git rev-parse --short HEAD )
     echo "GIT_COMMIT: $GIT_COMMIT"
     echo "Docker password from env=$DOCKER_PASSWORD"
     docker build -t $(dockerId)/$(imageName):$GIT_COMMIT .
