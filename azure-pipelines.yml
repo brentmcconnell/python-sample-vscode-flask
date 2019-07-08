@@ -20,12 +20,13 @@ steps:
     echo "imageName=$(imageName)"
     echo "Docker password=$(docker_pass)"
     echo "Docker username=$(docker_user)"
-    echo "Docker password from env=$DOCKER_PASSWORD"
     echo "Build.BuildNumber=$(Build.BuildNumber)"
-    echo "GIT_COMMIT: $GIT_COMMIT"
+    
 
 - script: |
     GIT_COMMIT=$( git rev-parse --short HEAD )
+    echo "GIT_COMMIT: $GIT_COMMIT"
+    echo "Docker password from env=$DOCKER_PASSWORD"
     docker build -t $(dockerId)/$(imageName):$GIT_COMMIT .
     docker login -u $(dockerId) -p $DOCKER_PASSWORD
     docker push $(dockerId)/$(imageName):$GIT_COMMIT
