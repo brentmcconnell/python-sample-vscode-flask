@@ -25,6 +25,6 @@ steps:
 - script: |
     docker build -t $(dockerId)/$(imageName) .
     docker login -u $(dockerId) -p $DOCKER_PASSWORD
-    docker push $(dockerId)/$(imageName)
+    docker push $(dockerId)/$(imageName):$(Build.BuildNumber)
   env:
     DOCKER_PASSWORD: $(password)
