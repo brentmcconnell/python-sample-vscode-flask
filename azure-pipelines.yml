@@ -16,6 +16,8 @@ variables:
 
 steps:
 - script: |
+    echo "dockerId=$(dockerId)"
+    echo "imageName=$(imageName)"
     echo "Docker password=$(docker_pass)"
     echo "Docker username=$(docker_user"
 - script: |
