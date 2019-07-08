@@ -22,7 +22,7 @@ steps:
     echo "Docker username=$(docker_user)"
 - script: |
     docker build -t $(dockerId)/$(imageName) .
-    docker login -u $(dockerId) -p $(DOCKER_PASS)
+    docker login -u $(dockerId) -p $(DOCKER_PASSWORD)
     docker push $(dockerId)/$(imageName)
   env:
-    DOCKER_PASSWORD: $(docker_pass)   
+    DOCKER_PASSWORD: $(password)   
