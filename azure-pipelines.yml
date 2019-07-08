@@ -1,5 +1,5 @@
 # Pipeline to create a new version of the SAML Flask container and
-# push it to DockerHub
+# push it to DockerHub 
 
 trigger:
 - master
