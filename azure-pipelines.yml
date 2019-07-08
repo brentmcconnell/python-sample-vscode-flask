@@ -13,6 +13,8 @@ variables:
     value: emcconne
   - name: imageName
     value: saml-flask
+  - name: gitCommit
+    value: $[ git rev-parse --short HEAD ]
 
 steps:
 - script: |
@@ -23,10 +25,10 @@ steps:
     echo "Docker password from env=$DOCKER_PASSWORD"
     echo "Build.BuildNumber=$(Build.BuildNumber)"
     echo "GIT_COMMIT: $GIT_COMMIT"
+
 - script: |
-    docker build -t $(dockerId)/$(imageName):$(Build.BuildNumber) .
+    docker build -t $(dockerId)/$(imageName):$(gitCommit) .
     docker login -u $(dockerId) -p $DOCKER_PASSWORD
-    docker push $(dockerId)/$(imageName):$(Build.BuildNumber)
+    docker push $(dockerId)/$(imageName):$(gitCommit)
   env:
     DOCKER_PASSWORD: $(password)
-    GIT_COMMIT: $[ git rev-parse --short HEAD ]
