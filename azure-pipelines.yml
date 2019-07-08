@@ -21,9 +21,10 @@ steps:
     echo "Docker password=$(docker_pass)"
     echo "Docker username=$(docker_user)"
     echo "Docker password from env=$DOCKER_PASSWORD"
+  echo "Build.BuildNumber=$(Build.BuildNumber)"
 - script: |
     docker build -t $(dockerId)/$(imageName) .
     docker login -u $(dockerId) -p $DOCKER_PASSWORD
     docker push $(dockerId)/$(imageName)
   env:
-    DOCKER_PASSWORD: $(password)   
+    DOCKER_PASSWORD: $(password)
