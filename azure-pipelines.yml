@@ -17,6 +17,7 @@ variables:
 steps:
 - script: |
     GIT_COMMIT=$( git rev-parse --short HEAD )
+    VERSION= $( cat VERSION )
     echo "dockerId=$(dockerId)"
     echo "imageName=$(imageName)"
     echo "Docker password=$(docker_pass)"
@@ -24,10 +25,11 @@ steps:
     echo "Build.BuildNumber=$(Build.BuildNumber)"
     echo "GIT_COMMIT: $GIT_COMMIT"
     echo "Docker password from env=$DOCKER_PASSWORD"
-    docker build -t $(dockerId)/$(imageName):$GIT_COMMIT -t $(dockerId)/$(imageName):latest .
+    docker build -t $(dockerId)/$(imageName):$GIT_COMMIT -t $(dockerId)/$(imageName):latest -t $(dockerId)/$(imageName):$VERSION .
     docker login -u $(dockerId) -p $DOCKER_PASSWORD
     docker push $(dockerId)/$(imageName):$GIT_COMMIT
     docker push $(dockerId)/$(imageName):latest
+    docker push $(dockerId)/$(imageName):$VERSION
     az --version
   env:
     DOCKER_PASSWORD: $(password)
