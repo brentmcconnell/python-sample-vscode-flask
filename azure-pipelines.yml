@@ -43,6 +43,7 @@ steps:
     docker push $(dockerId)/$(imageName):latest
     docker push $(dockerId)/$(imageName):$VERSION
     az --version
+    az vm list-ip-addresses
   displayName: Build Docker Container
   env:
     DOCKER_PASSWORD: $(password)
