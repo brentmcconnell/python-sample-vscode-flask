@@ -15,6 +15,7 @@ variables:
     value: saml-flask
 
 steps:
+- checkout: self
 - bash: |
     case $BUILD_REASON in
             "Manual") echo "$BUILD_REQUESTEDFOR manually queued the build." ;;
@@ -24,7 +25,7 @@ steps:
     esac
   condition: eq( variables['Agent.OS'], 'Linux' )
   displayName: Get Buid Reason
-  
+
 - script: |
     GIT_COMMIT=$( git rev-parse --short HEAD )
     VERSION=$( cat VERSION )
