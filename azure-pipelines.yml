@@ -28,5 +28,6 @@ steps:
     docker login -u $(dockerId) -p $DOCKER_PASSWORD
     docker push $(dockerId)/$(imageName):$GIT_COMMIT
     docker push $(dockerId)/$(imageName):latest
+    az --version
   env:
     DOCKER_PASSWORD: $(password)
