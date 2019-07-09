@@ -10,6 +10,21 @@ FROM tiangolo/uwsgi-nginx-flask:python3.6-alpine3.7
 ENV LISTEN_PORT=5000
 EXPOSE 5000
 
+# Install all build dependencies
+# Add bash for debugging purposes
+RUN apk update \
+    && apk add --virtual build-dependencies \
+        build-base \
+        gcc \
+        wget \
+        git \
+        libffi-dev \
+        openssl-dev \
+    && apk add \
+        bash \
+        xmlsec \
+    && rm -rf /var/cache/apk/*
+
 # Indicate where uwsgi.ini lives
 ENV UWSGI_INI uwsgi.ini
 
@@ -29,6 +44,6 @@ COPY . /hello_app
 # If you have additional requirements beyond Flask (which is included in the
 # base image), generate a requirements.txt file with pip freeze and uncomment
 # the next three lines.
-#COPY requirements.txt /
-#RUN pip install --no-cache-dir -U pip
-#RUN pip install --no-cache-dir -r /requirements.txt
+COPY requirements.txt /
+RUN pip install --no-cache-dir -U pip
+RUN pip install --no-cache-dir -r /requirements.txt
