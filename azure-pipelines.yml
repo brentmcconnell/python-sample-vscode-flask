@@ -34,7 +34,7 @@ steps:
 # Build and Push container to DockerHub
 - script: |
     GIT_COMMIT=$( git rev-parse --short HEAD )
-    echo '##vso[task.setvariable variable=GITCOMMIT;isOutput=true]$(goovy)'
+    echo '##vso[task.setvariable variable=GITCOMMIT;isOutput=true]yuck'
     VERSION=$( cat VERSION )
     echo '##vso[task.setvariable variable=VER]$[ cat VERSION ]'
     echo "GIT_COMMIT: $GIT_COMMIT"
