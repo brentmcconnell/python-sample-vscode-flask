@@ -27,20 +27,26 @@ steps:
         *) $BUILD_REASON ;;
     esac
   condition: eq( variables['Agent.OS'], 'Linux' )
-  displayName: Get Buid Reason
+  displayName: Get Build Reason
 
 # Build and Push container to DockerHub
 - script: |
     GIT_COMMIT=$( git rev-parse --short HEAD )
+    echo '##vso[task.setvariable variable=gitCommit]$GIT_COMMIT'
     VERSION=$( cat VERSION )
-    echo "GIT_COMMIT: $GIT_COMMIT"
-    echo "VERSION=$VERSION"
-    docker build -t $(dockerId)/$(imageName):$GIT_COMMIT -t $(dockerId)/$(imageName):latest -t $(dockerId)/$(imageName):$VERSION .
+    echo '##vso[task.setvariable variable=version]$VERSION'
+    echo "GIT_COMMIT: $(gitCommit)"
+    echo "VERSION=$(version)"
+  displayName: Set Dynamic Pipeline Variables
+
+- script: |
+    echo "Next Script: GIT_COMMIT: $(gitCommit)"
+    echo "Next Script: VERSION=$(version)"
+    docker build -t $(dockerId)/$(imageName):$(gitCommit) -t $(dockerId)/$(imageName):latest -t $(dockerId)/$(imageName):$(version) .
     docker login -u $(dockerId) -p $DOCKER_PASSWORD
-    docker push $(dockerId)/$(imageName):$GIT_COMMIT
+    docker push $(dockerId)/$(imageName):$(gitCommit)
     docker push $(dockerId)/$(imageName):latest
-    docker push $(dockerId)/$(imageName):$VERSION
-    az --version
+    docker push $(dockerId)/$(imageName):$(version)
   displayName: Build Docker Container
   env:
     DOCKER_PASSWORD: $(password)
@@ -53,4 +59,5 @@ steps:
     scriptLocation: inlineScript
     inlineScript: |
       echo "Running az script."
-      az container create -n saml-flask -g python-saml-app --image emcconne/saml-flask:latest --ports 5000 --dns-name-label saml-flask 
+      az container create -n saml-flask -g python-saml-app --image emcconne/saml-flask:$(gitCommit) --ports 5000 --dns-name-label saml-flask 
+  displayName: Publish new container
