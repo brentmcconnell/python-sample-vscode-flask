@@ -27,5 +27,6 @@ steps:
     docker build -t $(dockerId)/$(imageName):$GIT_COMMIT -t $(dockerId)/$(imageName):latest .
     docker login -u $(dockerId) -p $DOCKER_PASSWORD
     docker push $(dockerId)/$(imageName):$GIT_COMMIT
+    docker push $(dockerId)/$(imageName):latest
   env:
     DOCKER_PASSWORD: $(password)
