@@ -35,28 +35,25 @@ steps:
     GIT_COMMIT=$( git rev-parse --short HEAD )
     echo "##vso[task.setvariable variable=commitHash;isOutput=true]$GIT_COMMIT"
   name: setGitVar
+
+- script: |
+    VERSION=$( cat VERSION )
+    echo "##vso[task.setvariable variable=version;isOutput=true]$VERSION"
+  name: setVersion
   
 - script: echo $(setGitVar.commitHash)
   name: echoGitHash
 
 # Build and Push container to DockerHub
 - script: |
-    GIT_COMMIT=$( git rev-parse --short HEAD )
-    echo "##vso[task.setvariable variable=myOutputVar;isOutput=true]this is the $(goovy) value"
-    echo "myOutputVar: $myOutputVar"
-    echo "MYOUTPUTVAR: $MYOUTPUTVAR"
-    VERSION=$( cat VERSION )
-    echo '##vso[task.setvariable variable=VER]$[ cat VERSION ]'
-    echo "GIT_COMMIT: $GIT_COMMIT"
-    echo "GIT_COMMIT: $GITCOMMIT"
-    echo "VERSION=$VERSION"
-    echo "VERSION=$VER"
-  displayName: Set Dynamic Pipeline Variables
+    echo "GIT_COMMIT: $(setGitVar.commitHash)"
+    echo "VERSION=$(setVersion.version)"
+  displayName: Display Pipeline Dynamic Variables
 
 - script: |
     echo "Next Script: GIT_COMMIT: $GIT_COMMIT"
     echo "Next Script: VERSION=$(version)"
-    docker build -t $(dockerId)/$(imageName):$GIT_COMMIT -t $(dockerId)/$(imageName):latest -t $(dockerId)/$(imageName):$VERSION .
+    docker build -t $(dockerId)/$(imageName):$(setGitVar.commitHash) -t $(dockerId)/$(imageName):latest -t $(dockerId)/$(imageName):$VERSION .
     docker login -u $(dockerId) -p $DOCKER_PASSWORD
     docker push $(dockerId)/$(imageName):$GIT_COMMIT
     docker push $(dockerId)/$(imageName):latest
