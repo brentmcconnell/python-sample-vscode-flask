@@ -13,7 +13,7 @@ variables:
     value: emcconne
   - name: imageName
     value: saml-flask
-  - name: goovy
+  - name: configuration
     value: surprise
 
 steps:
