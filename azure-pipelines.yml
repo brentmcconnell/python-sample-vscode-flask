@@ -52,4 +52,5 @@ steps:
     azureSubscription: python-saml-app
     scriptLocation: inlineScript
     inlineScript: |
-      az container create -n saml-flask -g python-saml-app --image $(dockerId)/$(imageName):$GIT_COMMIT --ports 5000 --dns-name-label saml-flask
+      echo "Running az script."
+      az container create -n saml-flask -g python-saml-app --image emcconne/saml-flask:latest --ports 5000 --dns-name-label saml-flask 
