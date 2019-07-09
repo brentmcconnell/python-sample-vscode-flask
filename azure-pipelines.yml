@@ -33,11 +33,11 @@ steps:
 
 - script: |
     GIT_COMMIT=$( git rev-parse --short HEAD )
-    echo "##vso[task.setvariable variable=myOutputVar;isOutput=true]this is the $GIT_COMMIT value"
-  name: setvarStep
+    echo "##vso[task.setvariable variable=commitHash;isOutput=true]$GIT_COMMIT"
+  name: setGitVar
   
-- script: echo $(setvarStep.myOutputVar)
-  name: echovar
+- script: echo $(setGitVar.commitHash)
+  name: echoGitHash
 
 # Build and Push container to DockerHub
 - script: |
