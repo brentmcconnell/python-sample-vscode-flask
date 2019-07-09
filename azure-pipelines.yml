@@ -1,0 +1,33 @@
+# Pipeline to create a new version of the SAML Flask container and
+# push it to DockerHub 
+
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  - group: Docker
+  - name: dockerId
+    value: emcconne
+  - name: imageName
+    value: saml-flask
+
+steps:
+- script: |
+    GIT_COMMIT=$( git rev-parse --short HEAD )
+    echo "dockerId=$(dockerId)"
+    echo "imageName=$(imageName)"
+    echo "Docker password=$(docker_pass)"
+    echo "Docker username=$(docker_user)"
+    echo "Build.BuildNumber=$(Build.BuildNumber)"
+    echo "GIT_COMMIT: $GIT_COMMIT"
+    echo "Docker password from env=$DOCKER_PASSWORD"
+    docker build -t $(dockerId)/$(imageName):$GIT_COMMIT -t $(dockerId)/$(imageName):latest .
+    docker login -u $(dockerId) -p $DOCKER_PASSWORD
+    docker push $(dockerId)/$(imageName):$GIT_COMMIT
+    docker push $(dockerId)/$(imageName):latest
+    az --version
+  env:
+    DOCKER_PASSWORD: $(password)
