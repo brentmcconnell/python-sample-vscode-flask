@@ -31,7 +31,9 @@ steps:
   condition: eq( variables['Agent.OS'], 'Linux' )
   displayName: Get Build Reason
 
-- script: echo "##vso[task.setvariable variable=myOutputVar;isOutput=true]this is the $(configuration) value"
+- script: |
+    GIT_COMMIT=$( git rev-parse --short HEAD )
+    echo "##vso[task.setvariable variable=myOutputVar;isOutput=true]this is the $GIT_COMMIT value"
   name: setvarStep
   
 - script: echo $(setvarStep.myOutputVar)
