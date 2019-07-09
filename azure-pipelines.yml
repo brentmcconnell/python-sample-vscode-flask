@@ -34,7 +34,7 @@ steps:
     GIT_COMMIT=$( git rev-parse --short HEAD )
     echo '##vso[task.setvariable variable=GITCOMMIT]$GIT_COMMIT'
     VERSION=$( cat VERSION )
-    echo '##vso[task.setvariable variable=VER]$VERSION'
+    echo '##vso[task.setvariable variable=VER]$(( cat VERSION ))'
     echo "GIT_COMMIT: $GIT_COMMIT"
     echo "GIT_COMMIT: $GITCOMMIT"
     echo "VERSION=$VERSION"
