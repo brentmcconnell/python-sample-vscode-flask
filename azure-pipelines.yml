@@ -49,7 +49,7 @@ steps:
 # Publish container to ACI
 - task: AzureCLI@1
   inputs:
-    azureSubscription: msftAzureResources
+    azureSubscription: python-saml-app
     scriptLocation: inlineScript
     inlineScript: |
       az container create -n saml-flask -g python-saml-app --image $(dockerId)/$(imageName):$GIT_COMMIT --ports 5000 --dns-name-label saml-flask
