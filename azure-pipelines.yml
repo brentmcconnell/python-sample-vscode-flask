@@ -17,7 +17,7 @@ variables:
 steps:
 - script: |
     GIT_COMMIT=$( git rev-parse --short HEAD )
-    VERSION= $( cat VERSION )
+    VERSION=$( cat VERSION )
     echo "dockerId=$(dockerId)"
     echo "imageName=$(imageName)"
     echo "Docker password=$(docker_pass)"
