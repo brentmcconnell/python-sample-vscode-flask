@@ -47,3 +47,12 @@ steps:
   displayName: Build Docker Container
   env:
     DOCKER_PASSWORD: $(password)
+
+# Azure CLI
+# Run Azure CLI commands against an Azure subscription in a Shell script when running on Linux agent or Batch script when running on Windows agent.
+- task: AzureCLI@1
+  inputs:
+    azureSubscription: msftAzureResources
+    scriptLocation: inlineScript
+    inlineScript: |
+      az container create -n saml-flask -g python-saml-app --image $(dockerId)/$(imageName):$GIT_COMMIT --ports 5000 --dns-name-label saml-flask
