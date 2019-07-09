@@ -32,7 +32,7 @@ steps:
 # Build and Push container to DockerHub
 - script: |
     GIT_COMMIT=$( git rev-parse --short HEAD )
-    echo '##vso[task.setvariable variable=GITCOMMIT]$GIT_COMMIT'
+    echo '##vso[task.setvariable variable=GITCOMMIT;isOutput=true]$GIT_COMMIT'
     VERSION=$( cat VERSION )
     echo '##vso[task.setvariable variable=VER]$[ cat VERSION ]'
     echo "GIT_COMMIT: $GIT_COMMIT"
