@@ -15,6 +15,16 @@ variables:
     value: saml-flask
 
 steps:
+- bash: |
+    case $BUILD_REASON in
+            "Manual") echo "$BUILD_REQUESTEDFOR manually queued the build." ;;
+            "IndividualCI") echo "This is a CI build for $BUILD_REQUESTEDFOR." ;;
+            "BatchedCI") echo "This is a batched CI build for $BUILD_REQUESTEDFOR." ;;
+        *) $BUILD_REASON ;;
+    esac
+  condition: eq( variables['Agent.OS'], 'Linux' )
+  displayName: Get Buid Reason
+  
 - script: |
     GIT_COMMIT=$( git rev-parse --short HEAD )
     VERSION=$( cat VERSION )
@@ -32,5 +42,6 @@ steps:
     docker push $(dockerId)/$(imageName):latest
     docker push $(dockerId)/$(imageName):$VERSION
     az --version
+  displayName: Build Docker Container
   env:
     DOCKER_PASSWORD: $(password)
