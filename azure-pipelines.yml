@@ -15,7 +15,10 @@ variables:
     value: saml-flask
 
 steps:
+# Checkout is done automatically but here for readability
 - checkout: self
+
+# Why was this build executed
 - bash: |
     case $BUILD_REASON in
             "Manual") echo "$BUILD_REQUESTEDFOR manually queued the build." ;;
@@ -26,17 +29,12 @@ steps:
   condition: eq( variables['Agent.OS'], 'Linux' )
   displayName: Get Buid Reason
 
+# Build and Push container to DockerHub
 - script: |
     GIT_COMMIT=$( git rev-parse --short HEAD )
     VERSION=$( cat VERSION )
-    echo "dockerId=$(dockerId)"
-    echo "imageName=$(imageName)"
-    echo "Docker password=$(docker_pass)"
-    echo "Docker username=$(docker_user)"
-    echo "Build.BuildNumber=$(Build.BuildNumber)"
     echo "GIT_COMMIT: $GIT_COMMIT"
     echo "VERSION=$VERSION"
-    echo "Docker password from env=$DOCKER_PASSWORD"
     docker build -t $(dockerId)/$(imageName):$GIT_COMMIT -t $(dockerId)/$(imageName):latest -t $(dockerId)/$(imageName):$VERSION .
     docker login -u $(dockerId) -p $DOCKER_PASSWORD
     docker push $(dockerId)/$(imageName):$GIT_COMMIT
@@ -48,7 +46,7 @@ steps:
     DOCKER_PASSWORD: $(password)
 
 # Azure CLI
-# Run Azure CLI commands against an Azure subscription in a Shell script when running on Linux agent or Batch script when running on Windows agent.
+# Publish container to ACI
 - task: AzureCLI@1
   inputs:
     azureSubscription: msftAzureResources
