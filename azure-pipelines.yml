@@ -35,7 +35,8 @@ steps:
 - script: |
     GIT_COMMIT=$( git rev-parse --short HEAD )
     echo "##vso[task.setvariable variable=myOutputVar;isOutput=true]this is the $(goovy) value"
-    echo $(myOutputVar)
+    echo "myOutputVar: $myOutputVar"
+    echo "MYOUTPUTVAR: $MYOUTPUTVAR"
     VERSION=$( cat VERSION )
     echo '##vso[task.setvariable variable=VER]$[ cat VERSION ]'
     echo "GIT_COMMIT: $GIT_COMMIT"
