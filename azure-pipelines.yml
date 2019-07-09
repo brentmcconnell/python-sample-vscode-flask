@@ -40,24 +40,19 @@ steps:
     VERSION=$( cat VERSION )
     echo "##vso[task.setvariable variable=version;isOutput=true]$VERSION"
   name: setVersion
-  
-- script: echo $(setGitVar.commitHash)
-  name: echoGitHash
 
 # Build and Push container to DockerHub
 - script: |
     echo "GIT_COMMIT: $(setGitVar.commitHash)"
     echo "VERSION=$(setVersion.version)"
-  displayName: Display Pipeline Dynamic Variables
+  displayName: Echo Pipeline Dynamic Variables
 
 - script: |
-    echo "Next Script: GIT_COMMIT: $GIT_COMMIT"
-    echo "Next Script: VERSION=$(version)"
-    docker build -t $(dockerId)/$(imageName):$(setGitVar.commitHash) -t $(dockerId)/$(imageName):latest -t $(dockerId)/$(imageName):$VERSION .
+    docker build -t $(dockerId)/$(imageName):$(setGitVar.commitHash)  -t $(dockerId)/$(imageName):$(setVersion.version) -t $(dockerId)/$(imageName):latest .
     docker login -u $(dockerId) -p $DOCKER_PASSWORD
-    docker push $(dockerId)/$(imageName):$GIT_COMMIT
+    docker push $(dockerId)/$(imageName):$(setGitVar.commitHash)
     docker push $(dockerId)/$(imageName):latest
-    docker push $(dockerId)/$(imageName):$VERSION
+    docker push $(dockerId)/$(imageName):$(setVersion.version)
   displayName: Build Docker Container
   env:
     DOCKER_PASSWORD: $(password)
@@ -70,5 +65,5 @@ steps:
     scriptLocation: inlineScript
     inlineScript: |
       echo "Running az script."
-      az container create -n saml-flask -g python-saml-app --image emcconne/saml-flask:$(gitCommit) --ports 5000 --dns-name-label saml-flask 
+      az container create -n saml-flask -g python-saml-app --image emcconne/saml-flask:$(setGitVar.commitHash) --ports 5000 --dns-name-label saml-flask 
   displayName: Publish new container
