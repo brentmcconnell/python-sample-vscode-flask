@@ -31,6 +31,12 @@ steps:
   condition: eq( variables['Agent.OS'], 'Linux' )
   displayName: Get Build Reason
 
+- script: echo "##vso[task.setvariable variable=myOutputVar;isOutput=true]this is the $(configuration) value"
+  name: setvarStep
+  
+- script: echo $(setvarStep.myOutputVar)
+  name: echovar
+
 # Build and Push container to DockerHub
 - script: |
     GIT_COMMIT=$( git rev-parse --short HEAD )
