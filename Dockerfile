@@ -35,6 +35,9 @@ ENV UWSGI_INI uwsgi.ini
 # when all those static files are collected together.
 ENV STATIC_URL /hello_app/static
 
+# Add VERSION file to track released containers
+ADD VERSION .
+
 # Set the folder where uwsgi looks for the app
 WORKDIR /hello_app
 
