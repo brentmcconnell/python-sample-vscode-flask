@@ -13,8 +13,6 @@ variables:
     value: emcconne
   - name: imageName
     value: saml-flask
-  - name: configuration
-    value: surprise
 
 steps:
 # Checkout is done automatically but here for readability
@@ -33,27 +31,30 @@ steps:
 
 - script: |
     GIT_COMMIT=$( git rev-parse --short HEAD )
-    echo "##vso[task.setvariable variable=commitHash;isOutput=true]$GIT_COMMIT"
-  name: setGitVar
-
-- script: |
     VERSION=$( cat VERSION )
+    echo "##vso[task.setvariable variable=commitHash;isOutput=true]$GIT_COMMIT"
     echo "##vso[task.setvariable variable=version;isOutput=true]$VERSION"
-  name: setVersion
+  name: setVar
+  displayName: Set runtime variables for pipeline
+
+#- script: |
+#    VERSION=$( cat VERSION )
+#    echo "##vso[task.setvariable variable=version;isOutput=true]$VERSION"
+#  name: setVersion
 
 # Build and Push container to DockerHub
 - script: |
-    echo "GIT_COMMIT: $(setGitVar.commitHash)"
-    echo "VERSION=$(setVersion.version)"
-  displayName: Echo Pipeline Dynamic Variables
+    echo "GIT_COMMIT: $(setVar.commitHash)"
+    echo "VERSION=$(setVar.version)"
+  displayName: Echo pipeline dynamic variables
 
 - script: |
-    docker build -t $(dockerId)/$(imageName):$(setGitVar.commitHash)  -t $(dockerId)/$(imageName):$(setVersion.version) -t $(dockerId)/$(imageName):latest .
+    docker build -t $(dockerId)/$(imageName):$(setVar.commitHash)  -t $(dockerId)/$(imageName):$(setVar.version) -t $(dockerId)/$(imageName):latest .
     docker login -u $(dockerId) -p $DOCKER_PASSWORD
-    docker push $(dockerId)/$(imageName):$(setGitVar.commitHash)
+    docker push $(dockerId)/$(imageName):$(setVar.commitHash)
     docker push $(dockerId)/$(imageName):latest
-    docker push $(dockerId)/$(imageName):$(setVersion.version)
-  displayName: Build Docker Container
+    docker push $(dockerId)/$(imageName):$(setVar.version)
+  displayName: Build Docker container
   env:
     DOCKER_PASSWORD: $(password)
 
@@ -65,5 +66,5 @@ steps:
     scriptLocation: inlineScript
     inlineScript: |
       echo "Running az script."
-      az container create -n saml-flask -g python-saml-app --image emcconne/saml-flask:$(setGitVar.commitHash) --ports 5000 --dns-name-label saml-flask 
-  displayName: Publish new container
+      az container create -n saml-flask -g python-saml-app --image emcconne/saml-flask:$(setVar.commitHash) --ports 5000 --dns-name-label saml-flask 
+  displayName: Publish new container to ACI
